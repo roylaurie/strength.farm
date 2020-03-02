@@ -1,0 +1,76 @@
+div.exercise {
+    width: 260px;
+    margin: 0 0 20px 20px;
+    border: 1px dashed lightblue;
+    float: right;
+}
+div.exerciseTitle {
+    align-content: center;
+    border-bottom: 1px dashed lightblue;
+}
+div.exerciseTitle div {
+    width: 80px;
+    padding: 1px 0 0 10px;
+    font-size: 11pt;
+    font-variant: small-caps;
+}
+div.exerciseTitle span {
+    width: fit-content;
+    padding: 1px 0 1px 10px;
+    font-size: 8pt;
+}
+div.exerciseIcon {
+    width: 60px;
+    height: 60px;
+    float: left;
+}
+div.exerciseIcon img {
+    width: 60px;
+    height: 60px;
+    margin: 10px 10px 10px 10px;
+}
+div.exerciseMetricBox {
+    width: 40px;
+    height: 40px;
+    float: left;
+    align-content: center;
+    border: 1px dashed lightblue;
+    margin: 20px 0px 20px 20px;
+
+}
+div.exerciseMetricTitle {
+    width: 40px;
+    align-content: center;
+    border-bottom: 1px dashed lightblue;
+}
+div.exerciseMetricTitle div {
+    width: fit-content;
+    align-content: center;
+    margin: auto;
+    padding: 1px 0 2px 0;
+    font-variant: small-caps;
+    font-size: 11pt;
+}
+div.exerciseMetricContent {
+    width: 40px;
+    align-content: center;
+}
+div.exerciseMetricContent div {
+    width: fit-content;
+    align-content: center;
+    margin: auto;
+}
+div.exerciseInput {
+    width: 40px;
+    height: 40px;
+    margin: 20px 0 20px 20px;
+    float: left;
+    border: 1px dotted lightblue;
+}
+div.exerciseInput input {
+    width: 36px;
+    text-align: right;
+    margin: 10px 0 10px 0;
+    border: none;
+    font-size: 14pt;
+}

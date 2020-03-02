@@ -1,0 +1,38 @@
+div.leftBox {
+    width: 720px;
+    float: left;
+}
+div.rightBox {
+    width: 280px;
+    float: right;
+    margin-left: fill;
+}
+div.todayBox {
+    width: 720px;
+    border: 1px dashed lightblue;
+    min-height: 435px;
+}
+
+div.timelineBox {
+    margin-bottom: 20px;
+    min-height: 200px;
+    border: 1px dashed lightblue;
+}
+
+div.weekBox {
+    border: 1px dashed lightblue;
+    min-height: 235px;
+    margin: 0 0 20px 0;
+}
+div.boxTitle {
+    height: fit-content;
+    background-color: lightblue;
+    font-size: 24px;
+}
+
+div.boxTitle div {
+    width: fit-content;
+    align-content: center;
+    margin: auto;
+    color: black;
+}

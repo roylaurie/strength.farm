@@ -1,0 +1,17 @@
+div.workoutBox {
+    padding: 20px 20px 8px 20px;
+    border-bottom: 1px dashed lightblue;
+}
+div.workoutHead {
+    width: 100px;
+    height: 100px;
+    border: 1px solid lightblue;
+    border-right: 1px dashed lightblue;
+    align-content: center;
+    float: left;
+}
+div.workoutHead div {
+    margin: 40% auto 40% auto;
+    width: fit-content;
+    height: fit-content;
+}
