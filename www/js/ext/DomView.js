@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Represents an HTML schema definition by document object model, typically loaded by file.
+ */
 class DomTemplate {
     constructor(dom, pointers, name, uri) {
         this._dom = dom;
@@ -29,6 +32,11 @@ class DomTemplate {
     };
 }
 
+/**
+ * Maintains an offscreen copy of the DOM for a specific template instance.
+ * Binds values.
+ * Updates onscreen copy of DOM upon refresh().
+ */
 class DomView {
     constructor(definition) {
         let tmplDom = definition._getDom();
@@ -173,6 +181,9 @@ class DomTemplateParameter {
     };
 }
 
+/**
+ * Abstract base class for all template functions.
+ */
 class DomTemplateFunc {
     constructor(name, paramSchema) {
         this.name = name;
@@ -201,6 +212,9 @@ class DomTemplateIntervalFunc extends DomTemplateFunc {
 }
 
 
+/**
+ * Maintains a reference to a template not that represents another template.
+ */
 class DomTemplatePointer {
     constructor(templateNode, template) {
         this._templateNode = templateNode;
@@ -225,6 +239,9 @@ class DomTemplatePointer {
     }
 }
 
+/**
+ * Maintains a reference to a template node that represents variables.
+ */
 class DomTemplateVarPointer {
     constructor(templateNode, name) {
         this._templateNode = templateNode;
@@ -240,6 +257,9 @@ class DomTemplateVarPointer {
     };
 }
 
+/**
+ * Singleton that allows access to DomView library.
+ */
 class DomViewEngine {
     constructor() {
         this._cache = {};
