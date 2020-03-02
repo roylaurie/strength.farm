@@ -46,6 +46,7 @@ class DomView {
         this._vars = {};
         this._built = false;
 
+        // build template pointers for the offscreen copy of the dom
         let pointers = definition._getTemplatePointers();
         this._dom.querySelectorAll('[data-template]').forEach((node) => {
             let name = node.getAttribute('data-template');
@@ -57,6 +58,7 @@ class DomView {
             this._pointers[name] = new DomTemplatePointer(node, pointer.getTemplate());
         });
 
+        // build variable pointers for the dom copy
         this._dom.querySelectorAll('[data-tmpl-var]').forEach((node) => {
             let name = node.getAttribute('data-tmpl-var');
             this._vars[name] = new DomTemplateVarPointer(node, name);
@@ -68,6 +70,7 @@ class DomView {
     };
 
     bind(name, values) {
+        // error if the template has already been built or the specified template variable doesn't exist on the template
         if (this._built) {
             throw new Error('Template already built');
         } else if (typeof this._vars[name] === 'undefined') {
@@ -77,12 +80,14 @@ class DomView {
         let pointer = this._vars[name];
         let node = pointer.getNode();
 
+        // fill any attributes specified
         if (typeof values['attr'] !== 'undefined') {
             for (let name in values['attr']) {
                 node.setAttribute(name, values['attr'][name]);
             }
         }
 
+        // fill innerText or innerHTML if specified
         if (typeof values['innerText'] !== 'undefined') {
             node.innerText = values['innerText'];
         } else if (typeof values['innerHTML'] !== 'undefined') {
@@ -110,6 +115,7 @@ class DomView {
             throw new Error('Template already built.');
         }
 
+        // remove all DomView attributes from offscreen dom copy
         for (let i = 0; i < stripAttributes.length; ++i) {
             const attribute = stripAttributes[i];
             const selector = '[' + attribute + ']';
@@ -118,6 +124,7 @@ class DomView {
             })
         }
 
+        // build and inject any inline templates
         this._dom.querySelectorAll('[data-template]').forEach((node) => {
             let name = node.getAttribute('data-template');
             let template = this.insertTemplate(name);
