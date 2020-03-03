@@ -181,32 +181,24 @@ Html.fetchFile = (uri, mimeType, responseType) => {
 };
 
 Html.createCssInclude = (cssUri) => {
-    if (typeof Html._CSS_INCLUDE_FRAGMENT === 'undefined') {
-        const linkElement = document.createElement('link');
-        linkElement.setAttribute('rel', 'stylesheet');
-        linkElement.setAttribute('type', 'text/css');
-        linkElement.setAttribute('href', '');
-        Html._CSS_INCLUDE_FRAGMENT = document.createDocumentFragment();
-        Html._CSS_INCLUDE_FRAGMENT.append(linkElement);
-    }
+    const linkElement = document.createElement('link');
+    linkElement.setAttribute('rel', 'stylesheet');
+    linkElement.setAttribute('type', 'text/css');
+    linkElement.setAttribute('href', cssUri);
 
-    const cssFrag = Html._CSS_INCLUDE_FRAGMENT.cloneNode(true);
-    cssFrag.childNodes[0].setAttribute('href', cssUri);
-    return cssFrag;
+    const fragment = document.createDocumentFragment();
+    fragment.append(linkElement);
+    return fragment;
 };
 
 Html.createJsInclude = (jsUri) => {
-    if (typeof Html._JS_INCLUDE_FRAGMENT === 'undefined') {
-        const jsElement = document.createElement('script');
-        jsElement.setAttribute('type', 'text/javascript');
-        jsElement.setAttribute('src', '');
-        Html._JS_INCLUDE_FRAGMENT = document.createDocumentFragment();
-        Html._JS_INCLUDE_FRAGMENT.append(jsElement);
-    }
+    const jsElement = document.createElement('script');
+    jsElement.setAttribute('type', 'text/javascript');
+    jsElement.setAttribute('src', jsUri);
 
-    const jsFrag = Html._JS_INCLUDE_FRAGMENT.cloneNode(true);
-    jsFrag.childNodes[0].setAttribute('src', jsUri);
-    return jsFrag;
+    const fragment = document.createDocumentFragment();
+    fragment.append(jsElement);
+    return fragment;
 };
 
 class DomTemplateParameter {
