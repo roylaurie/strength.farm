@@ -57,7 +57,7 @@ class DomView {
         // build variable pointers for the dom copy
         this._dom.querySelectorAll('[data-tmpl-var]').forEach((node) => {
             let varName = node.getAttribute('data-tmpl-var');
-            this._varPointers[varName] = new DomTemplateVarPointer(node, varName);
+            this._varPointers[varName] = new DomVariablePointer(node, varName);
         });
     };
 
@@ -228,7 +228,7 @@ class DomTemplateParameter {
 /**
  * Abstract base class for all template functions.
  */
-class DomTemplateFunc {
+class DomFunction {
     constructor(name, paramSchema) {
         this.name = name;
         this.paramSchema = paramSchema;
@@ -243,7 +243,7 @@ class DomTemplateFunc {
     };
 }
 
-class DomTemplateIntervalFunc extends DomTemplateFunc {
+class DomIntervalFunc extends DomFunction {
     constructor() {
         super('interval', [
             new DomTemplateParameter('on', DomView.NAMEPATH, DomView.REQUIRED),
@@ -286,7 +286,7 @@ class DomTemplatePointer {
 /**
  * Maintains a reference to a template node that represents variables.
  */
-class DomTemplateVarPointer {
+class DomVariablePointer {
     constructor(templateNode, name) {
         this._templateNode = templateNode;
         this._name = name;
@@ -298,6 +298,64 @@ class DomTemplateVarPointer {
 
     getName() {
         return this._name;
+    };
+}
+
+class DomVariableValue {
+    constructor(value) {
+        this._value = value;
+        this._previousValue = value;
+    };
+
+    setValue(value) {
+        if (value !== this._value) {
+            this._previousValue = this._value;
+            this._value = value;
+            return true;
+        }
+
+        return false;
+    };
+
+    getValue() {
+        return this._value;
+    };
+
+    getPreviousValue() {
+        return this._previousValue;
+    };
+
+    modified() {
+        return ( this._value !== this._previousValue );
+    };
+
+    reset() {
+        this._previousValue = this._value;
+    };
+}
+
+class DomVariableValueObject extends DomVariableValue {
+    constructor(valueObj, propertyName) {
+        super(valueObj);
+        this._propertyName = propertyName;
+        this._previousValue = this._value[this._propertyName];
+
+    };
+
+    getValue() {
+        return this._value[this._propertyName];
+    };
+
+    setValue(value) {
+        throw new Error('Cannot set value on DomVariableValueObject');
+    }
+
+    modified() {
+        return ( this._value[this._propertyName] !== this._previousValue );
+    };
+
+    reset() {
+        this._previousValue = this._value[this._propertyName];
     };
 }
 
