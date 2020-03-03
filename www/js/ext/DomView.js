@@ -151,48 +151,20 @@ class DomView {
     };
 }
 
-class Html {
-    constructor() {
-        throw new Error('Cannot instantiate class.');
-    }
-}
-
-Html.fetchFile = (uri, mimeType, responseType) => {
-    const promise = new Promise((resolve, reject) => {
-        let request = new XMLHttpRequest();
-        request.onreadystatechange = () => {
-            if (request.readyState === XMLHttpRequest.DONE) {
-                if (request.status === 200 || request.status === 0) {
-                    resolve(request);
-                } else {
-                    reject('HTTP Status: ' + request.status);
-                }
-            }
-        };
-
-        request.open(DomView.GET, uri, true);
-        request.overrideMimeType(mimeType);
-        request.responseType = responseType;
-        request.send();
-    });
-
-    return promise;
-};
-
-Html.createCssInclude = (cssUri) => {
-    const linkElement = document.createElement('link');
-    linkElement.setAttribute('rel', 'stylesheet');
-    linkElement.setAttribute('type', 'text/css');
-    linkElement.setAttribute('href', cssUri);
-    return linkElement;
-};
-
-Html.createJsInclude = (jsUri) => {
-    const jsElement = document.createElement('script');
-    jsElement.setAttribute('type', 'text/javascript');
-    jsElement.setAttribute('src', jsUri);
-    return jsElement;
-};
+DomView.CSS_DIR = 'view/css/';
+DomView.HTML_DIR = 'view/html/';
+DomView.JS_DIR = 'view/js/;'
+DomView.NAMEPATH = 'namepath';
+DomView.NUMBER = 'number';
+DomView.OPTIONAL = 'optional';
+DomView.PARAM_ATTR = 'data-template-param';
+DomView.PARAMS_ATTR = 'data-template-params';
+DomView.REQUIRED = 'required';
+DomView.STRING = 'string';
+DomView.TEMPLATE_ATTR = 'data-template';
+DomView.TEMPLATE_SELECTOR = '[data-template]';
+DomView.VAR_ATTR = 'data-var';
+DomView.VAR_SELECTOR = '[data-var]';
 
 class DomTemplateParameter {
     constructor(paramName, dataType, required) {
@@ -437,6 +409,49 @@ class DomViewEngine {
 
 DomViewEngine.ABSTRACT_METHOD = () => { throw new Error('Abstract method'); };
 
+class Html {
+    constructor() {
+        throw new Error('Cannot instantiate class.');
+    }
+}
+
+Html.fetchFile = (uri, mimeType, responseType) => {
+    const promise = new Promise((resolve, reject) => {
+        let request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+            if (request.readyState === XMLHttpRequest.DONE) {
+                if (request.status === 200 || request.status === 0) {
+                    resolve(request);
+                } else {
+                    reject('HTTP Status: ' + request.status);
+                }
+            }
+        };
+
+        request.open(DomView.GET, uri, true);
+        request.overrideMimeType(mimeType);
+        request.responseType = responseType;
+        request.send();
+    });
+
+    return promise;
+};
+
+Html.createCssInclude = (cssUri) => {
+    const linkElement = document.createElement('link');
+    linkElement.setAttribute('rel', 'stylesheet');
+    linkElement.setAttribute('type', 'text/css');
+    linkElement.setAttribute('href', cssUri);
+    return linkElement;
+};
+
+Html.createJsInclude = (jsUri) => {
+    const jsElement = document.createElement('script');
+    jsElement.setAttribute('type', 'text/javascript');
+    jsElement.setAttribute('src', jsUri);
+    return jsElement;
+};
+
 Html.CSS = 'css';
 Html.CSS_EXT = '.css';
 Html.DOCUMENT = 'document';
@@ -448,20 +463,5 @@ Html.INNERTEXT = 'innerText';
 Html.INNERHTML = 'innerHTML';
 Html.JS = 'js';
 Html.JS_EXT = '.js';
-
-DomView.CSS_DIR = 'view/css/';
-DomView.HTML_DIR = 'view/html/';
-DomView.JS_DIR = 'view/js/;'
-DomView.NAMEPATH = 'namepath';
-DomView.NUMBER = 'number';
-DomView.OPTIONAL = 'optional';
-DomView.PARAM_ATTR = 'data-template-param';
-DomView.PARAMS_ATTR = 'data-template-params';
-DomView.REQUIRED = 'required';
-DomView.STRING = 'string';
-DomView.TEMPLATE_ATTR = 'data-template';
-DomView.TEMPLATE_SELECTOR = '[data-template]';
-DomView.VAR_ATTR = 'data-var';
-DomView.VAR_SELECTOR = '[data-var]';
 
 
