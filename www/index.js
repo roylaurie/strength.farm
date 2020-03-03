@@ -2,8 +2,31 @@
 
 function index() {
     const tmplEngine = new DomViewEngine();
-    tmplEngine.init('index').then((template) => {
-        template.refresh();
+    tmplEngine.init('index').then((indexTemplate) => {
+        const dailyTemplate = indexTemplate.getTemplate('daily');
+
+        for (let workoutName in WorkoutsToday) {
+            let workout = WorkoutsToday[workoutName];
+            let workoutTemplate = dailyTemplate.addTemplate('daily/workout');
+            workoutTemplate.bindValue({
+                'title': workout.getName()
+            });
+
+            for (let exerciseName in workout.getExercises()) {
+                let exercise = workout.getExercise(exerciseName);
+                let exerciseTemplate = workoutTemplate.addTemplate('daily/workout/exercise');
+                exerciseTemplate.bindValue({
+                    'title': exercise.getName(),
+                    'image': { attr: { src: 'img/foo.png' } },
+                    'goal': exercise.getGoal(),
+                    'done': exercise.getDone(),
+                    'input': exercise.getDefaultReps();
+                });
+            }
+        }
+
+
+        indexTemplate.refresh();
     });
 
     return;
