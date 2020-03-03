@@ -452,6 +452,14 @@ Html.createJsInclude = (jsUri) => {
     return jsElement;
 };
 
+Html.generateId = (prefix) => {
+    const prefixStr = ( typeof prefix === 'undefined' ? 'tmpl-' : prefix );
+    ++Html._LAST_ID;
+    return prefixStr + Html._LAST_ID;
+};
+
+Html._LAST_ID = 99;
+
 Html.CSS = 'css';
 Html.CSS_EXT = '.css';
 Html.DOCUMENT = 'document';

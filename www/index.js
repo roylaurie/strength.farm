@@ -1,21 +1,20 @@
 'use strict';
 
 function index() {
-    const tmplEngine = new DomViewEngine();
-    tmplEngine.init('index').then((indexTemplate) => {
+    new DomViewEngine().init('index').then((indexTemplate) => {
         const dailyTemplate = indexTemplate.getTemplate('daily');
 
         for (let workoutName in WorkoutsToday) {
             let workout = WorkoutsToday[workoutName];
             let workoutTemplate = dailyTemplate.addTemplate('daily/workout');
-            workoutTemplate.bindValue({
-                'title': workout.getName()
+            workoutTemplate.bindValues({
+                'title': workout.getName(),
             });
 
             for (let exerciseName in workout.getExercises()) {
                 let exercise = workout.getExercise(exerciseName);
                 let exerciseTemplate = workoutTemplate.addTemplate('daily/workout/exercise');
-                exerciseTemplate.bindValue({
+                exerciseTemplate.bindValues({
                     'title': exercise.getName(),
                     'image': { attr: { src: 'img/foo.png' } },
                     'goal': exercise.getGoal(),
