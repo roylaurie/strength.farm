@@ -145,8 +145,7 @@ class DomView {
         const name = this._template.getName();
         const cssUri = DomView.CSS_DIR + name + DomView.CSS_EXT;
         if (!DomViewEngine.singleton.isResourceLoaded(name, DomView.CSS)) {
-            const linkFragment = Html.createCssInclude(cssUri);
-            document.querySelector('head').append(linkFragment.childNodes[0]);
+            document.querySelector('head').append(Html.createCssInclude(cssUri));
             DomViewEngine.singleton.markResourceLoaded(name, DomView.CSS, cssUri);
         }
     };
@@ -185,20 +184,14 @@ Html.createCssInclude = (cssUri) => {
     linkElement.setAttribute('rel', 'stylesheet');
     linkElement.setAttribute('type', 'text/css');
     linkElement.setAttribute('href', cssUri);
-
-    const fragment = document.createDocumentFragment();
-    fragment.append(linkElement);
-    return fragment;
+    return linkElement;
 };
 
 Html.createJsInclude = (jsUri) => {
     const jsElement = document.createElement('script');
     jsElement.setAttribute('type', 'text/javascript');
     jsElement.setAttribute('src', jsUri);
-
-    const fragment = document.createDocumentFragment();
-    fragment.append(jsElement);
-    return fragment;
+    return jsElement;
 };
 
 class DomTemplateParameter {
