@@ -182,42 +182,18 @@ Html.fetchFile = (uri, mimeType, responseType) => {
 
 Html.createCssInclude = (cssUri) => {
     if (typeof Html._CSS_INCLUDE_FRAGMENT === 'undefined') {
-        const doc = new DOMParser().parseFromString('<link rel="stylesheet" type="text/css" href="">', 'text/html');
-        const frag = document.createDocumentFragment();
-        frag.append(doc.querySelector('head').childNodes[0]);
-        Html._CSS_INCLUDE_FRAGMENT = frag;
+        Html._CSS_INCLUDE_FRAGMENT = document.createDocumentFragment();
+        const linkElement = document.createElement('link');
+        linkElement.setAttribute('rel', 'stylesheet');
+        linkElement.setAttribute('type', 'text/css');
+        linkElement.setAttribute('href', '');
+        Html._CSS_INCLUDE_FRAGMENT.append(linkElement);
     }
 
     const cssFrag = Html._CSS_INCLUDE_FRAGMENT.cloneNode(true);
     cssFrag.childNodes[0].setAttribute('href', cssUri);
     return cssFrag;
 };
-
-DomView.CSS = 'css';
-DomView.CSS_DIR = 'view/css/';
-DomView.CSS_EXT = '.css';
-DomView.DOCUMENT = 'document';
-DomView.GET = 'GET';
-DomView.HTML = 'html';
-DomView.HTML_DIR = 'view/html/';
-DomView.HTML_EXT = '.html';
-DomView.HTML_MIME = 'text/html';
-DomView.INNERTEXT = 'innerText';
-DomView.INNERHTML = 'innerHTML';
-DomView.JS = 'js';
-DomView.JS_DIR = 'js/;'
-DomView.JS_EXT = '.js';
-DomView.NAMEPATH = 'namepath';
-DomView.NUMBER = 'number';
-DomView.OPTIONAL = 'optional';
-DomView.PARAM_ATTR = 'data-template-param';
-DomView.PARAMS_ATTR = 'data-template-params';
-DomView.REQUIRED = 'required';
-DomView.STRING = 'string';
-DomView.TEMPLATE_ATTR = 'data-template';
-DomView.TEMPLATE_SELECTOR = '[data-template]';
-DomView.VAR_ATTR = 'data-var';
-DomView.VAR_SELECTOR = '[data-var]';
 
 class DomTemplateParameter {
     constructor(paramName, dataType, required) {
@@ -403,12 +379,12 @@ class DomViewEngine {
 
     fetch(namepath, uri) {
         if (typeof uri === 'undefined') {
-            uri = DomView.HTML_DIR + namepath + DomView.HTML_EXT;
+            uri = DomView.HTML_DIR + namepath + Html.HTML_EXT;
         }
 
         let self = this;
         let promise = new Promise((resolve, reject) => {
-            Html.fetchFile(uri, DomView.HTML_MIME, DomView.DOCUMENT).then((request) => {
+            Html.fetchFile(uri, Html.HTML_MIME, Html.DOCUMENT).then((request) => {
                 let fragment = document.createDocumentFragment();
                 let nodes = request.responseXML.querySelector('body').childNodes.forEach((node) => {
                     fragment.append(node);
@@ -461,5 +437,32 @@ class DomViewEngine {
 }
 
 DomViewEngine.ABSTRACT_METHOD = () => { throw new Error('Abstract method'); };
+
+Html.CSS = 'css';
+Html.CSS_EXT = '.css';
+Html.DOCUMENT = 'document';
+Html.GET = 'GET';
+Html.HTML = 'html';
+Html.HTML_EXT = '.html';
+Html.HTML_MIME = 'text/html';
+Html.INNERTEXT = 'innerText';
+Html.INNERHTML = 'innerHTML';
+Html.JS = 'js';
+Html.JS_EXT = '.js';
+
+DomView.CSS_DIR = 'view/css/';
+DomView.HTML_DIR = 'view/html/';
+DomView.JS_DIR = 'view/js/;'
+DomView.NAMEPATH = 'namepath';
+DomView.NUMBER = 'number';
+DomView.OPTIONAL = 'optional';
+DomView.PARAM_ATTR = 'data-template-param';
+DomView.PARAMS_ATTR = 'data-template-params';
+DomView.REQUIRED = 'required';
+DomView.STRING = 'string';
+DomView.TEMPLATE_ATTR = 'data-template';
+DomView.TEMPLATE_SELECTOR = '[data-template]';
+DomView.VAR_ATTR = 'data-var';
+DomView.VAR_SELECTOR = '[data-var]';
 
 
