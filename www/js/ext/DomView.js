@@ -181,10 +181,16 @@ Html.fetchFile = (uri, mimeType, responseType) => {
 };
 
 Html.createCssInclude = (cssUri) => {
-    const doc = new DOMParser().parseFromString('<link rel="stylesheet" type="text/css" href="' + cssUri + '">', 'text/html');
-    const frag = document.createDocumentFragment();
-    frag.append(doc.querySelector('head').childNodes[0]);
-    return frag;
+    if (typeof Html._CSS_INCLUDE_FRAGMENT === 'undefined') {
+        const doc = new DOMParser().parseFromString('<link rel="stylesheet" type="text/css" href="">', 'text/html');
+        const frag = document.createDocumentFragment();
+        frag.append(doc.querySelector('head').childNodes[0]);
+        Html._CSS_INCLUDE_FRAGMENT = frag;
+    }
+
+    const cssFrag = Html._CSS_INCLUDE_FRAGMENT.cloneNode(true);
+    cssFrag.childNodes[0].setAttribute('href', cssUri);
+    return cssFrag;
 };
 
 DomView.CSS = 'css';
