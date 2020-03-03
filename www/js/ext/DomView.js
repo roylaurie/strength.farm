@@ -145,12 +145,47 @@ class DomView {
         const name = this._template.getName();
         const cssUri = DomView.CSS_DIR + name + DomView.CSS_EXT;
         if (!DomViewEngine.singleton.isResourceLoaded(name, DomView.CSS)) {
-            const doc = new DOMParser().parseFromString('<link rel="stylesheet" type="text/css" href="' + cssUri + '">', 'text/html');
-            document.querySelector('head').append(doc.querySelector('head').childNodes[0]);
+            const linkFragment = Html.createCssInclude(cssUri);
+            document.querySelector('head').append(linkFragment.childNodes[0]);
             DomViewEngine.singleton.markResourceLoaded(name, DomView.CSS, cssUri);
         }
     };
 }
+
+class Html {
+    constructor() {
+        throw new Error('Cannot instantiate class.');
+    }
+}
+
+Html.fetchFile = (uri, mimeType, responseType) => {
+    const promise = new Promise((resolve, reject) => {
+        let request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+            if (request.readyState === XMLHttpRequest.DONE) {
+                if (request.status === 200 || request.status === 0) {
+                    resolve(request);
+                } else {
+                    reject('HTTP Status: ' + request.status);
+                }
+            }
+        };
+
+        request.open(DomView.GET, uri, true);
+        request.overrideMimeType(mimeType);
+        request.responseType = responseType;
+        request.send();
+    });
+
+    return promise;
+};
+
+Html.createCssInclude = (cssUri) => {
+    const doc = new DOMParser().parseFromString('<link rel="stylesheet" type="text/css" href="' + cssUri + '">', 'text/html');
+    const frag = document.createDocumentFragment();
+    frag.append(doc.querySelector('head').childNodes[0]);
+    return frag;
+};
 
 DomView.CSS = 'css';
 DomView.CSS_DIR = 'view/css/';
@@ -305,7 +340,7 @@ class DomViewEngine {
 
         let self = this;
         let promise = new Promise((resolve, reject) => {
-            self._fetchFile(uri, DomView.HTML_MIME, DomView.DOCUMENT).then((request) => {
+            Html.fetchFile(uri, DomView.HTML_MIME, DomView.DOCUMENT).then((request) => {
                 let fragment = document.createDocumentFragment();
                 let nodes = request.responseXML.querySelector('body').childNodes.forEach((node) => {
                     fragment.append(node);
@@ -317,28 +352,6 @@ class DomViewEngine {
                     reject(error);
                 });
             });
-        });
-
-        return promise;
-    };
-
-    _fetchFile(uri, mimeType, responseType) {
-        let promise = new Promise((resolve, reject) => {
-            let request = new XMLHttpRequest();
-            request.onreadystatechange = () => {
-                if (request.readyState === XMLHttpRequest.DONE) {
-                    if (request.status === 200 || request.status === 0) {
-                        resolve(request);
-                    } else {
-                        reject('HTTP Status: ' + request.status);
-                    }
-                }
-            };
-
-            request.open(DomView.GET, uri, true);
-            request.overrideMimeType(mimeType);
-            request.responseType = responseType;
-            request.send();
         });
 
         return promise;
