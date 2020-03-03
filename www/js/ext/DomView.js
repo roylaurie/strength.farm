@@ -4,11 +4,11 @@
  * Represents an HTML schema definition by document object model, typically loaded by file.
  */
 class DomTemplate {
-    constructor(dom, pointers, name, uri) {
+    constructor(dom, name, uri, templatePointers) {
         this._dom = dom;
-        this._pointers = pointers;
         this._name = name;
         this._uri = uri;
+        this._templatePointers = templatePointers;
     };
 
     getName() {
@@ -19,15 +19,11 @@ class DomTemplate {
         return this._uri;
     };
 
-    template() {
-        return new DomView(this);
-    };
-
-    _getDom() {
+    getDom() {
         return this._dom;
     };
 
-    _getTemplatePointers() {
+    getTemplatePointers() {
         return this._pointers;
     };
 }
@@ -38,30 +34,30 @@ class DomTemplate {
  * Updates onscreen copy of DOM upon refresh().
  */
 class DomView {
-    constructor(definition) {
-        let tmplDom = definition._getDom();
-        this._template = definition;
+    constructor(template) {
+        let tmplDom = template.getDom();
+        this._template = template;
         this._dom = ( tmplDom === document ? document : tmplDom.cloneNode(true) );
-        this._pointers = {};
-        this._vars = {};
+        this._templatePointers = {};
+        this._varPointers = {};
         this._built = false;
 
         // build template pointers for the offscreen copy of the dom
-        let pointers = definition._getTemplatePointers();
+        let pointers = template.getTemplatePointers();
         this._dom.querySelectorAll('[data-template]').forEach((node) => {
             let name = node.getAttribute('data-template');
             if (typeof pointers[name] === 'undefined') {
                 throw new Error('Unable to find pointer for template ' + name);
             }
 
-            let pointer = pointers[name];
-            this._pointers[name] = new DomTemplatePointer(node, pointer.getTemplate());
+            let templatePointer = pointers[name];
+            this._templatePointers[name] = new DomTemplatePointer(node, templatePointer.getTemplate());
         });
 
         // build variable pointers for the dom copy
         this._dom.querySelectorAll('[data-tmpl-var]').forEach((node) => {
-            let name = node.getAttribute('data-tmpl-var');
-            this._vars[name] = new DomTemplateVarPointer(node, name);
+            let varName = node.getAttribute('data-tmpl-var');
+            this._varPointers[varName] = new DomTemplateVarPointer(node, varName);
         });
     };
 
@@ -69,21 +65,21 @@ class DomView {
         return this._template;
     };
 
-    bind(name, values) {
+    bindValue(varName, values) {
         // error if the template has already been built or the specified template variable doesn't exist on the template
         if (this._built) {
             throw new Error('Template already built');
-        } else if (typeof this._vars[name] === 'undefined') {
-            throw new Error('Template variable ' + name + ' does not exist.');
+        } else if (typeof this._varPointers[varName] === 'undefined') {
+            throw new Error('Template variable ' + varName + ' does not exist.');
         }
 
-        let pointer = this._vars[name];
-        let node = pointer.getNode();
+        let varPointer = this._varPointers[varName];
+        let node = varPointer.getNode();
 
         // fill any attributes specified
         if (typeof values['attr'] !== 'undefined') {
             for (let name in values['attr']) {
-                node.setAttribute(name, values['attr'][name]);
+                node.setAttribute(varName, values['attr'][varName]);
             }
         }
 
@@ -95,16 +91,16 @@ class DomView {
         }
     };
 
-    insertTemplate(name) {
+    insertTemplate(templateName) {
         if (this._built) {
             throw new Error('Template already built');
-        } else if (typeof this._pointers[name] === 'undefined') {
-            throw new Error('Template ' + name + ' does not exist.');
+        } else if (typeof this._templatePointers[templateName] === 'undefined') {
+            throw new Error('Template ' + templateName + ' does not exist.');
         }
 
-        let pointer = this._pointers[name];
-        let template = pointer.getTemplate().template();
-        pointer.addTemplate(template);
+        let templatePointer = this._templatePointers[templateName];
+        let template = templatePointer.getTemplate().template();
+        templatePointer.addTemplate(template);
         return template;
     };
 
@@ -147,11 +143,11 @@ class DomView {
         }
 
         const name = this._template.getName();
-        const cssUri = 'css/' + name + '.css';
-        if (!DomViewEngine.singleton.isResourceLoaded(name, 'css')) {
+        const cssUri = DomView.CSS_DIR + name + DomView.CSS_EXT;
+        if (!DomViewEngine.singleton.isResourceLoaded(name, DomView.CSS)) {
             const doc = new DOMParser().parseFromString('<link rel="stylesheet" type="text/css" href="' + cssUri + '">', 'text/html');
             document.querySelector('head').append(doc.querySelector('head').childNodes[0]);
-            DomViewEngine.singleton.markResourceLoaded(name, 'css', cssUri);
+            DomViewEngine.singleton.markResourceLoaded(name, DomView.CSS, cssUri);
         }
     };
 }
