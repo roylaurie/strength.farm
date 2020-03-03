@@ -301,10 +301,33 @@ class DomVariablePointer {
     };
 }
 
-class DomVariableValue {
+class IDomVariableValue {
+    constructor() {}
+
+    getValue = DomViewEngine.ABSTRACT_METHOD;
+
+    modified = DomViewEngine.ABSTRACT_METHOD;
+
+    reset = DomViewEngine.ABSTRACT_METHOD;
+}
+
+class DomVariableValue extends IDomVariableValue {
     constructor(value) {
+        super();
         this._value = value;
         this._previousValue = value;
+    };
+
+    getValue() {
+        return this._value;
+    };
+
+    modified() {
+        return ( this._value !== this._previousValue );
+    };
+
+    reset() {
+        this._previousValue = this._value;
     };
 
     setValue(value) {
@@ -316,46 +339,27 @@ class DomVariableValue {
 
         return false;
     };
-
-    getValue() {
-        return this._value;
-    };
-
-    getPreviousValue() {
-        return this._previousValue;
-    };
-
-    modified() {
-        return ( this._value !== this._previousValue );
-    };
-
-    reset() {
-        this._previousValue = this._value;
-    };
 }
 
-class DomVariableValueObject extends DomVariableValue {
+class DomVariableValueObject extends IDomVariableValue {
     constructor(valueObj, propertyName) {
-        super(valueObj);
+        super();
+        this._valueObj = valueObj;
         this._propertyName = propertyName;
         this._previousValue = this._value[this._propertyName];
 
     };
 
     getValue() {
-        return this._value[this._propertyName];
+        return this._valueObj[this._propertyName];
     };
 
-    setValue(value) {
-        throw new Error('Cannot set value on DomVariableValueObject');
-    }
-
     modified() {
-        return ( this._value[this._propertyName] !== this._previousValue );
+        return ( this._valueObj[this._propertyName] !== this._previousValue );
     };
 
     reset() {
-        this._previousValue = this._value[this._propertyName];
+        this._previousValue = this._valueObj[this._propertyName];
     };
 }
 
@@ -455,5 +459,7 @@ class DomViewEngine {
         return promise;
     };
 }
+
+DomViewEngine.ABSTRACT_METHOD = () => { throw new Error('Abstract method'); };
 
 
