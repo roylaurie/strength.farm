@@ -4,11 +4,10 @@
  * Represents an HTML schema definition by document object model, typically loaded by file.
  */
 export default class DomTemplate {
-    constructor(dom, name, uri, templatePointers) {
+    constructor(dom, name, uri) {
         this._dom = dom;
         this._name = name;
         this._uri = uri;
-        this._templatePointers = templatePointers;
     };
 
     getName() {
@@ -21,9 +20,5 @@ export default class DomTemplate {
 
     getDom() {
         return this._dom;
-    };
-
-    getTemplatePointers() {
-        return this._pointers;
     };
 }

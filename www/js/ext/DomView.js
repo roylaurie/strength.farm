@@ -45,14 +45,15 @@ class DomIntervalFunc extends DomFunction {
 /**
  * Maintains a reference to a template node that represents variables.
  */
-class DomVariablePointer {
-    constructor(templateNode, name) {
-        this._templateNode = templateNode;
-        this._name = name;
+class DomVariablePointer extends DomViewPointer {
+    constructor(domNode, view, varName) {
+        super(domNode, view);
+        this._name = varName;
+        this._varValue = new DomVariableValue();
     };
 
-    getNode() {
-        return this._templateNode;
+    getVarValue() {
+        return this._value;
     };
 
     getName() {

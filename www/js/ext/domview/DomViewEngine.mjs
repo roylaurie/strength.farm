@@ -3,18 +3,21 @@
  */
 'use strict';
 
+import Html from 'js/ext/domview/Html.mjs';
+
 /**
  * Singleton that allows access to DomView library.
  */
 export default class DomViewEngine {
-    constructor(window, document) {
-        this._window = window;
-        this._document = document;
-        this._cache = {};
+    constructor(document, window) {
+        this.document = document || document;
+        this.window = window || window;
+        this._templates = {};
         this._resourcesLoaded = {};
+        this._view = null;
     };
 
-    isResourceLoaded(name, resourceType) {
+    resourceLoaded(name, resourceType) {
         return (this._resourcesLoaded[name] && this._resourcesLoaded[name][resourceType]);
     };
 
@@ -27,20 +30,28 @@ export default class DomViewEngine {
     }
 
     init(viewName) {
-        DomViewEngine.singleton = this;
-        return this._load(document, pageName, pageName + DomView.HTML_EXT);
+        if (!this.window.name) {
+            this.window.name = Html.generateId('tmpl-');
+        }
+
+        DomViewEngine._singletons[this.window.name] = this;
+
+        const self = this;
+        return this._load(this.document, viewName, viewName + DomView.HTML_EXT).then((template) => {
+            this._view = new DomView(self, template);
+        });
     };
 
-    get(name) {
-        if (!this.loaded(name)) {
+    getTemplate(name) {
+        if (!this.templateLoaded(name)) {
             throw new Error('Template not loaded: ' + name);
         }
 
-        return this._cache[name];
+            return this._templates[name];
     };
 
-    loaded(name) {
-        return ( typeof this._cache[name] !== 'undefined' );
+    templateLoaded(name) {
+        return ( typeof this._templates[name] !== 'undefined' );
     };
 
     fetch(namepath, uri) {
@@ -51,7 +62,7 @@ export default class DomViewEngine {
         let self = this;
         let promise = new Promise((resolve, reject) => {
             Html.fetchFile(uri, Html.HTML_MIME, Html.DOCUMENT).then((request) => {
-                let fragment = document.createDocumentFragment();
+                let fragment = self._document.createDocumentFragment();
                 let nodes = request.responseXML.querySelector('body').childNodes.forEach((node) => {
                     fragment.append(node);
                 });
@@ -91,7 +102,7 @@ export default class DomViewEngine {
                 });
 
                 let template = new DomTemplate(dom, pointers, name, uri);
-                self._cache[name] = template;
+                self._templates[name] = template;
                 resolve(template);
             }).catch((error) => {
                 reject(error);
@@ -102,4 +113,14 @@ export default class DomViewEngine {
     };
 }
 
+DomViewEngine._singletons = {};
+
 DomViewEngine.ABSTRACT_METHOD = () => { throw new Error('Abstract method'); };
+
+DomViewEngine.get = (window) => {
+    if (typeof DomViewEngine._singletons[window.name] !== 'undefined') {
+        return DomViewEngine._singletons[window.name];
+    }
+
+    throw new Error('DomView engine not initialized for window:' + window.name);
+};

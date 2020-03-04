@@ -44,7 +44,7 @@ Html.createJsInclude = (jsUri) => {
 };
 
 Html.generateId = (prefix) => {
-    const prefixStr = ( typeof prefix === 'undefined' ? 'tmpl-' : prefix );
+    const prefixStr = ( typeof prefix === 'undefined' ? '_' : prefix );
     ++Html._LAST_ID;
     return prefixStr + Html._LAST_ID;
 };

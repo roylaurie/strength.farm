@@ -8,7 +8,7 @@ import StrengthFarmModel from 'js/StrengthFarmModel.mjs';
 
 export default function index() {
     new DomViewEngine().init('index').then((indexTemplate) => {
-        const dailyTemplate = indexTemplate.getTemplate('daily');
+        const dailyTemplate = indexTemplate.getView('daily');
 
         for (let workoutName in StrengthFarmModel.workoutsToday) {
             let workoutPlan = StrengthFarmModel.workoutsToday[workoutName];

@@ -6,10 +6,11 @@
  * Updates onscreen copy of DOM upon refresh().
  */
 export default class DomView {
-    constructor(template) {
-        let tmplDom = template.getDom();
+    constructor(engine, template) {
+        this._engine = engine;
         this._template = template;
-        this._dom = ( tmplDom === document ? document : tmplDom.cloneNode(true) );
+        let tmplDom = template.getDom();
+        this._dom = ( tmplDom === engine.document ? engine.document : tmplDom.cloneNode(true) );
         this._templatePointers = {};
         this._varPointers = {};
         this._built = false;
@@ -63,7 +64,7 @@ export default class DomView {
         }
     };
 
-    insertTemplate(templateName) {
+    insertView(templateName) {
         if (this._built) {
             throw new Error('Template already built');
         } else if (typeof this._templatePointers[templateName] === 'undefined') {
@@ -80,7 +81,7 @@ export default class DomView {
         const stripAttributes = ['data-tmpl-var'];
 
         if (this._built) {
-            throw new Error('Template already built.');
+            throw new Error('View already built.');
         }
 
         // remove all DomView attributes from offscreen dom copy
@@ -95,11 +96,9 @@ export default class DomView {
         // build and inject any inline templates
         this._dom.querySelectorAll('[data-template]').forEach((node) => {
             let name = node.getAttribute('data-template');
-            let template = this.insertTemplate(name);
-            template.build();
-            template.inject(node);
-
-
+            let view = this.insertView(name);
+            view.build();
+            view.inject(node);
         });
 
         this._built = true;
