@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE lang SYSTEM "lang.dtd">
+<lang from="en" to="en">
+    <define key="open-paragraph">blah blah blah blah
+        blah blah ${daily/workout/exercise.image.attr.alt} blah</define>
+    <text>Daily</text>
+</lang>

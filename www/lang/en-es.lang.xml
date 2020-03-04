@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE lang SYSTEM "lang.dtd">
+<lang from="en" to="es">
+    <translate><from>Daily</from>
+        <to>Diario</to></translate>
+    <define key="open-paragraph">blah blah blah blah
+        blah blah blah blah</define>
+</lang>

@@ -1,0 +1,11 @@
+<!DOCTYPE lang [
+    <!ELEMENT lang (translate,define,text)>
+        <!ATTLIST lang from CDATA #REQUIRED>
+        <!ATTLIST lang to CDATA #REQUIRED>
+        <!ELEMENT translate (from,to)>
+            <!ELEMENT from (#PCDATA)>
+            <!ELEMENT to (#PCDATA)>
+        <!ELEMENT define (#PCDATA)>
+        <!ATTLIST define key CDATA #REQUIRED>
+        <!ELEMENT text (#PCDATA)>
+]>

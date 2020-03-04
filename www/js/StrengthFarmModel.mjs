@@ -14,14 +14,13 @@ export default class StrengthFarmModel {
     }
 };
 
-
 StrengthFarmModel.exerciseTypes = {
-    'pushup': new ExerciseType('pushup', 'Push-Up', 'Push-Ups'),
-    'pushup-widegrip': new ExerciseType('pushup-widegrip', 'Wide Grip Push-Up', 'Wide Grip Push-Ups'),
-    'crunch': new ExerciseType('crunch', 'Crunch', 'Crunches'),
-    'curl': new ExerciseType('curl', 'Curl', 'Curls'),
-    'cycle': new ExerciseType('cycle', 'Cycling', 'Cycling'),
-    'intimacy': new ExerciseType('intimacy', 'Intimacy', 'Intimacy')
+    'pushup': new ExerciseType('Push-Up', 'Push-Ups'),
+    'pushup-widegrip': new ExerciseType('Wide Grip Push-Up', 'Wide Grip Push-Ups'),
+    'crunch': new ExerciseType('Crunch', 'Crunches'),
+    'curl': new ExerciseType(Curl, 'Curls'),
+    'cycle': new ExerciseType('Cycling', 'Cycling'),
+    'intimacy': new ExerciseType('Intimacy', 'Intimacy')
 };
 
 StrengthFarmModel.exerciseMeasurementTypes = {
@@ -34,7 +33,7 @@ StrengthFarmModel.exerciseMeasurementTypes = {
 };
 
 StrengthFarmModel.workoutPlans = {
-    'core': new WorkoutPlan('core', 'Core', [
+    'core': new WorkoutPlan('Core', [
         new WorkoutExercise(StrengthFarmModel.exerciseTypes.pushup, [
             new ExerciseMeasurement(StrengthFarmModel.exerciseMeasurementTypes.repetition, 10) ] ),
         new WorkoutExercise(StrengthFarmModel.exerciseTypes.crunch, [
@@ -42,13 +41,13 @@ StrengthFarmModel.workoutPlans = {
         new WorkoutExercise(StrengthFarmModel.exerciseTypes.curl, [
             new ExerciseMeasurement(StrengthFarmModel.exerciseMeasurementTypes.repetition, 5) ] )
         ]),
-    'cardio': new WorkoutPlan('cardio', 'Cardio', [
+    'cardio': new WorkoutPlan('Cardio', [
         new WorkoutExercise(StrengthFarmModel.exerciseTypes.cycle,
             [ new ExerciseMeasurement(StrengthFarmModel.exerciseMeasurementTypes.duration, 20) ],
             [ new ExerciseCondition(new ExerciseCondition(StrengthFarmModel.exerciseMeasurementTypes.heartrate, 155)) ])
         ]),
-    'private': new WorkoutPlan('private', 'Private', [
-        new WorkoutExercise(StrengthFarmModel.exerciseTypes.sex, [
+    'private': new WorkoutPlan('Private', [
+        new WorkoutExercise(StrengthFarmModel.exerciseTypes.intimacy, [
             new ExerciseMeasurement(StrengthFarmModel.exerciseMeasurementTypes.duration, 40)
         ])
     ])
