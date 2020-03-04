@@ -1,7 +1,14 @@
 'use strict';
 
 export default class ExerciseCondition {
-    constructor(exerciseMeasurementRequirement) {
-        this.exerciseMeasurementRequirement = exerciseMeasurementRequirement;
+    /**
+     * @param {ExerciseMeasurement} measurementRequirement
+     */
+    constructor(measurementRequirement) {
+        this._measurementRequirement = measurementRequirement;
     };
+
+    getMeasurementRequirement() {
+        return this._measurementRequirement;
+    }
 }

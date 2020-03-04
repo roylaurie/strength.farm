@@ -1,6 +1,6 @@
 'use strict';
 
-import ExerciseType from 'js/model/ExerciseType.mjs';
+import ExerciseType from 'model/ExerciseType.mjs';
 import ExerciseMeasurementType from 'js/model/ExerciseMeasurementType.mjs';
 import WorkoutPlan from 'js/model/WorkoutPlan.mjs';
 import WorkoutExercise from 'js/model/WorkoutExercise.mjs';
