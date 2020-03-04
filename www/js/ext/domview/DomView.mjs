@@ -38,16 +38,37 @@ export default class DomView {
         return this._template;
     };
 
-    bindValue(varName, values) {
-        // error if the template has already been built or the specified template variable doesn't exist on the template
-        if (this._built) {
-            throw new Error('Template already built');
-        } else if (typeof this._varPointers[varName] === 'undefined') {
-            throw new Error('Template variable ' + varName + ' does not exist.');
+    bindObject(dataObj) {
+        for (let name in this._varPointers) {
+            if (typeof dataObj[name] !== 'undefined') {
+                this._varPointers[name].bindObjectValue(dataObj, name);
+            }
         }
 
-        let varPointer = this._varPointers[varName];
-        let node = varPointer.getNode();
+        return this;
+    };
+
+    bindValue(varName, value) {
+        if (typeof this._varPointers[varName] === 'undefined') {
+            throw new Error('View variable does not exist: ' + varName);
+        }
+
+        this._varPointers[varName].bindValue(varName, value);
+        return this;
+    };
+
+    bindValues(values) {
+        for (let key in values) {
+            if (typeof this._varPointers[key] === 'undefined') {
+                continue;
+            }
+
+            let value = values[key];
+            let varPointer = this._varPointers[key];
+            varPointer.bindValue(value);
+        }
+
+        return this; //todo
 
         // fill any attributes specified
         if (typeof values['attr'] !== 'undefined') {
@@ -64,15 +85,15 @@ export default class DomView {
         }
     };
 
-    insertView(templateName) {
+    insertView(viewName) {
         if (this._built) {
             throw new Error('Template already built');
-        } else if (typeof this._templatePointers[templateName] === 'undefined') {
-            throw new Error('Template ' + templateName + ' does not exist.');
+        } else if (typeof this._templatePointers[viewName] === 'undefined') {
+            throw new Error('Template ' + viewName + ' does not exist.');
         }
 
-        let templatePointer = this._templatePointers[templateName];
-        let template = templatePointer.getTemplate().template();
+        let templatePointer = this._templatePointers[viewName];
+        let view = templatePointer.getView().template();
         templatePointer.addTemplate(template);
         return template;
     };
