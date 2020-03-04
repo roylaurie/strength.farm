@@ -24,7 +24,7 @@ export default class DomView {
             }
 
             let templatePointer = pointers[name];
-            this._templatePointers[name] = new DomTemplatePointer(node, templatePointer.getTemplate());
+            this._templatePointers[name] = new DomViewPointer(node, templatePointer.getTemplate());
         });
 
         // build variable pointers for the dom copy

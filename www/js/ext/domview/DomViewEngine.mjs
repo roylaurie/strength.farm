@@ -94,7 +94,7 @@ export default class DomViewEngine {
                 matches.forEach((node) => {
                     for (let i = 0; i < templates.length; ++i) {
                         if (templates[i].getName() === node.getAttribute(DomView.TEMPLATE_ATTR)) {
-                            let pointer = new DomTemplatePointer(node, templates[i]);
+                            let pointer = new DomViewPointer(node, templates[i]);
                             pointers[templates[i].getName()] = pointer;
                             break;
                         }
