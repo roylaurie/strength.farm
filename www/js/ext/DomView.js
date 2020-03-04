@@ -314,7 +314,9 @@ class DomVariableValueObject extends IDomVariableValue {
  * Singleton that allows access to DomView library.
  */
 class DomViewEngine {
-    constructor() {
+    constructor(window, document) {
+        this._window = window;
+        this._document = document;
         this._cache = {};
         this._resourcesLoaded = {};
     };
