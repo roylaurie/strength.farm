@@ -31,7 +31,7 @@ export default class WorkoutPlan {
 
     /**
      * @param {WorkoutExercise} exercise
-     * @throws Error if exercise already exists
+     * @throws {Error} if exercise already exists
      */
     addExercise(exercise) {
         try {
@@ -46,7 +46,8 @@ export default class WorkoutPlan {
 
     /**
      * @param {String} name
-     * @returns {WorkoutExercise
+     * @returns {WorkoutExercise}
+     * @throws {Error} if exercise doesn't exist
      */
     getExercise(name) {
         for (let i = 0; i < this._exercises.length; ++i) {
