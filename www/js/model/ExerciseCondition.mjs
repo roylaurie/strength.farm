@@ -10,5 +10,5 @@ export default class ExerciseCondition {
 
     getMeasurementRequirement() {
         return this._measurementRequirement;
-    }
+    };
 }
