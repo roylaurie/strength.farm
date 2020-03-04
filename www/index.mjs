@@ -1,5 +1,9 @@
+/**
+ * @copyright 2020 Asmov LLC
+ */
 'use strict';
 
+import DomViewEngine from 'js/ext/domview/DomViewEngine.mjs';
 import StrengthFarmModel from 'js/StrengthFarmModel.mjs';
 
 export default function index() {
