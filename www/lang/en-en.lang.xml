@@ -3,5 +3,5 @@
 <lang from="en" to="en">
     <define key="open-paragraph">blah blah blah blah
         blah blah ${daily/workout/exercise.image.attr.alt} blah</define>
-    <text>Daily</text>
+    <define key="daily">Daily</define>
 </lang>

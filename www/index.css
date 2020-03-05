@@ -20,6 +20,13 @@ input {
 .hidden {
     visibility: hidden;
 }
+.tmplTemplate {
+    margin: 0;
+    padding: 0;
+    border: none;
+    width: available;
+    height: available;
+}
 div.container {
     width: 1024px;
     align-content: center;

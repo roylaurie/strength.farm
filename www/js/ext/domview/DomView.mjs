@@ -1,6 +1,9 @@
 'use strict';
 
 import DomVariablePointer from "www/js/ext/domview/DomVariablePointer.mjs";
+import DomTemplatePointer from "www/js/ext/domview/DomTemplatePointer.mjs";
+import DomTemplatePointerCollection from "www/js/ext/domview/DomTemplatePointerCollection.mjs";
+import DomViewEngine from "www/js/ext/domview/DomViewEngine.mjs";
 
 /**
  * Maintains an offscreen copy of the DOM for a specific template instance.
@@ -13,7 +16,9 @@ export default class DomView {
         this._template = template;
         let tmplDom = template.getDom();
         this._dom = ( tmplDom === engine.document ? engine.document : tmplDom.cloneNode(true) );
+        /** @var {Map<String, Array<DomTemplatePointer|DomTemplatePointerCollection>} **/
         this._templatePointers = {};
+        /** @var {Map<String, DomVariablePointer>} **/
         this._varPointers = {};
         this._built = false;
 
@@ -24,7 +29,21 @@ export default class DomView {
         // build template pointers for the offscreen copy of the dom
         this._dom.querySelectorAll('[data-template]').forEach((node) => {
             let templateName = node.getAttribute('data-template');
-            this._templatePointers[templateName] = new DomViewTemplatePointer(node, this);
+            let templateType = node.getAttribute('data-tmpl-param-type');
+
+            let templateView = new DomView(this._engine, this._engine.getTemplate(templateName));
+            if (typeof this._templatePointers[templateName] === 'undefined') {
+                this._templatePointers = [];
+            }
+
+            let templatePointer = null;
+            if (templateType === 'collection') {
+                templatePointer = new DomTemplatePointerCollection(node, this, templateView)
+            } else {
+                templatePointer = new DomTemplatePointer(node, this, templateView);
+            }
+
+            this._templatePointers[templateName].push(templatePointer);
         });
 
         // build variable pointers for the dom copy
@@ -71,17 +90,41 @@ export default class DomView {
         return this;
     };
 
-    insertView(viewName) {
-        if (this._built) {
-            throw new Error('Template already built');
-        } else if (typeof this._templatePointers[viewName] === 'undefined') {
-            throw new Error('Template ' + viewName + ' does not exist.');
+    getTemplatePointer(templateName, templateNodeId) {
+        if (typeof this._templatePointers[templateName] === 'undefined') {
+            throw new Error('Template ' + templateName + ' does not exist.');
         }
 
-        let templatePointer = this._templatePointers[viewName];
-        let view = templatePointer.getView().template();
-        templatePointer.addTemplate(template);
-        return template;
+        const templatePointers = this._templatePointers[templateName];
+
+        if (!templateNodeId) {
+            if (templatePointers.length === 0) {
+                return this._templatePointers[0];
+            } else {
+                throw new Error('Ambiguous call without templateNodeId specified');
+            }
+        }
+
+
+        for (let i = 0; i < templatePointers.length; ++i) {
+            if (templatePointers[i].getNode().getAttribute('id') === templateNodeId) {
+                return templatePointers[i];
+            }
+        }
+
+        throw new Error('View ' + templateName + ' with id ' + templateNodeId + ' does not exist');
+    };
+
+    addView(viewName, templateNodeId) {
+        let templatePointerCollection = this.getTemplatePointer(viewName, templateNodeId);
+        if (!(templatePointerCollection instanceof DomTemplatePointerCollection)) {
+            throw new Error('Cannot add view to non-collection template:' + viewName);
+        }
+
+        let view = new DomView(this._engine, this._engine.getTemplate(viewName));
+        let templatePointer = new DomTemplatePointer(templatePointerCollection.getNode(), view);
+        templatePointerCollection.addTemplatePointer(templatePointer);
+        return view;
     };
 
     display() {
@@ -110,13 +153,13 @@ export default class DomView {
         for (let i = 0; i < stripAttributes.length; ++i) {
             const attribute = stripAttributes[i];
             const selector = '[' + attribute + ']';
-            this._dom.querySelectorAll(selector).forEach((node) => {
+            domout.querySelectorAll(selector).forEach((node) => {
                 node.removeAttribute(attribute);
             })
         }
 
         // build and inject any inline templates
-        this._dom.querySelectorAll('[data-template]').forEach((node) => {
+        domout.querySelectorAll('[data-template]').forEach((node) => {
             let name = node.getAttribute('data-template');
             let view = this.insertView(name);
             view.build();

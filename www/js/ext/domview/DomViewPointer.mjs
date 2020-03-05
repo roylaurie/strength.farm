@@ -4,9 +4,9 @@
  *
  */
 export default class DomViewPointer {
-    constructor(domNode, view) {
-        this._domNode = domNode;
+    constructor(view, domNode) {
         this._view = view;
+        this._domNode = domNode;
     };
 
     getNode() {

@@ -1,10 +1,11 @@
 'use strict';
 
 export default class DomVariableValue extends IDomVariableValue {
-    constructor(value) {
+    constructor(value, onModifiedCallback) {
         super();
         this._value = value;
         this._previousValue = value;
+        this._onModifiedCallback = onModifiedCallback || null;
     };
 
     getValue() {
@@ -15,14 +16,22 @@ export default class DomVariableValue extends IDomVariableValue {
         return ( this._value !== this._previousValue );
     };
 
+    _onModified() {
+        if (this._onModifiedCallback) {
+            this._onModifiedCallback(this);
+        }
+    };
+
     reset() {
         this._previousValue = this._value;
+        this._onModified();
     };
 
     setValue(value) {
         if (value !== this._value) {
             this._previousValue = this._value;
             this._value = value;
+            this._onModified();
             return true;
         }
 
