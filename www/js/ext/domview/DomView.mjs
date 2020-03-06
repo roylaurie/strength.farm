@@ -39,8 +39,10 @@ export default class DomView {
             let templatePointer = null;
             if (templateType === 'collection') {
                 templatePointer = new DomTemplatePointerCollection(node, this, templateView)
-            } else {
+            } else if (!templateType || templateType === 'template') {
                 templatePointer = new DomTemplatePointer(node, this, templateView);
+            } else {
+                throw new Error('Invalid template type: ' + templateType);
             }
 
             this._templatePointers[templateName].push(templatePointer);

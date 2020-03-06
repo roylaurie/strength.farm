@@ -7,7 +7,9 @@ import DomViewEngine from 'js/ext/domview/DomViewEngine.mjs';
 import StrengthFarmModel from 'js/StrengthFarmModel.mjs';
 
 export default function index() {
-    new DomViewEngine().init('index').then((indexTemplate) => {
+    new DomViewEngine().init('index', {
+        'alert/foo': 'alert/foo'
+    }).then((indexTemplate) => {
         const dailyTemplate = indexTemplate.getView('daily');
 
         for (let workoutName in StrengthFarmModel.workoutsToday) {

@@ -29,7 +29,12 @@ export default class DomViewEngine {
         this._resourcesLoaded[name][resourceType] = uri;
     }
 
-    init(viewName) {
+    /**
+     * @param {String} viewName
+     * @param {Map<String, String>?} loadViewNams viewName -> templateUri (or viewName)
+     * @returns {Promise<DomView>}
+     */
+    init(viewName, loadViewNames) {
         if (!this.window.name) {
             this.window.name = Html.generateId('tmpl-');
         }
@@ -37,9 +42,29 @@ export default class DomViewEngine {
         DomViewEngine._singletons[this.window.name] = this;
 
         const self = this;
-        return this._load(this.document, viewName, viewName + DomView.HTML_EXT).then((template) => {
-            this._view = new DomView(self, template);
+        const promises = [];
+
+        // load the root view
+        let promise = this._load(this.document, viewName, viewName + DomView.HTML_EXT).then((template) => {
+            self._view = new DomView(self, template);
         });
+
+        promises.push(promise);
+
+        // load additional views
+        if (typeof loadViewNames !== 'undefined') {
+            for (let loadViewName in loadViewNames) {
+                let loadTemplateUri = loadViewNames[loadViewName];
+                if (loadTemplateUri.substr(-5) !== Html.HTML_EXT) {
+                    loadTemplateUri = loadTemplateUri + Html.HTML_EXT;
+                }
+
+                let promise = self._load(self.document, loadViewName, loadTemplateUri);
+                promises.push(promise);
+            }
+        }
+
+        return Promise.all(promises);
     };
 
     getTemplate(name) {
