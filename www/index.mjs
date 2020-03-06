@@ -10,7 +10,7 @@ export default function index() {
     new DomViewEngine().init('index', {
         'alert/foo': 'alert/foo'
     }).then((indexTemplate) => {
-        const dailyTemplate = indexTemplate.getView('daily');
+        const dailyTemplate = DomViewEngine.get().getView('daily');
 
         for (let workoutName in StrengthFarmModel.workoutsToday) {
             let workoutPlan = StrengthFarmModel.workoutsToday[workoutName];

@@ -45,10 +45,7 @@ export default class DomViewEngine {
         const promises = [];
 
         // load the root view
-        let promise = this._load(this.document, viewName, viewName + DomView.HTML_EXT).then((template) => {
-            self._view = new DomView(self, template);
-        });
-
+        let promise = this._load(this.document, viewName, viewName + DomView.HTML_EXT);
         promises.push(promise);
 
         // load additional views
@@ -64,7 +61,11 @@ export default class DomViewEngine {
             }
         }
 
-        return Promise.all(promises);
+        return Promise.all(promises).then((templates) => {
+            let rootTemplate = templates[0];
+            self._view = new DomView(self, rootTemplate);
+            return self._view;
+        });
     };
 
     getTemplate(name) {
