@@ -4,6 +4,7 @@
 'use strict';
 
 import Html from 'js/ext/domview/Html.mjs';
+import DomView from 'js/ext/domview/DomView.mjs';
 
 /**
  * Singleton that allows access to DomView library.
@@ -31,7 +32,7 @@ export default class DomViewEngine {
 
     /**
      * @param {String} viewName
-     * @param {Map<String, String>?} loadViewNams viewName -> templateUri (or viewName)
+     * @param {Map<String, String>?} loadViewNames viewName -> templateUri (or viewName)
      * @returns {Promise<DomView>}
      */
     init(viewName, loadViewNames) {
